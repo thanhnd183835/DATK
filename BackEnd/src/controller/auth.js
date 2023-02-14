@@ -25,7 +25,7 @@ module.exports.signIn = async (req, res) => {
             } else {
                 const token = jwt.sign(
                     { _id: user._id, role: user.role, transactions: user.transactions},
-                    process.env.JWT_SECRET,
+                    "MERNSECRET",
                     {
                         expiresIn: '300d',
                     },

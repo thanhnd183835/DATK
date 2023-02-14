@@ -7,7 +7,6 @@ module.exports.create_payment_url = async (req, res, next) => {
     try {
         // lay ip
         let ipAddr =
-            req.headers["x-forwarded-for"] ||
             req.connection.remoteAddress ||
             req.socket.remoteAddress ||
             req.connection.socket.remoteAddress;
