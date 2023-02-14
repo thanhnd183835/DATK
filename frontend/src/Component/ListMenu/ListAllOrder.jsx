@@ -20,7 +20,7 @@ import Menu from "../Menu/Menu";
 
 const colums = [
     {id: 'id', label: 'ID', align: 'center'},
-    {id: 'orderId', label: 'Mã đơn hàng222222222222', align: 'center'},
+    {id: 'orderId', label: 'Mã đơn hàng', align: 'center'},
     {id: 'orderType', label: 'Mã hàng hóa', align: 'center'},
     {id: 'amount', label: 'Số tiền', align: 'center'},
     {id: 'bankCode', label: 'Ngân Hàng', align: 'center'},
