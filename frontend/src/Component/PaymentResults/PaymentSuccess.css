@@ -1,0 +1,46 @@
+.page_success {
+    display: flex;
+}
+
+.pageRight {
+    margin-top: 150px;
+    display: flex;
+    max-width: 100%;
+}
+
+.pageCenter {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.iconSuccess {
+    color: green;
+    margin-right: 20px;
+}
+
+.NotificationTitle {
+    font-size: 60px;
+    margin-top: 6px;
+    color: #4141e2;
+}
+
+.back_list_button {
+    background-color: #4141e2;
+    border: 1px solid #0395f6;
+    border-radius: 5px;
+    font-size: 20px;
+    color: #fafafa;
+    cursor: pointer;
+    position: relative;
+    padding-left: 30px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.arrowBackIcon {
+    position: absolute;
+    z-index: 1;
+    color: #fafafa;
+    margin-top: 5px;
+}
+

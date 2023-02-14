@@ -1,0 +1,10 @@
+.header-search-component{
+    position: relative;
+}
+.icon-search{
+    position: absolute;
+    right: 160px;
+}
+.homePage{
+    display: flex;
+}

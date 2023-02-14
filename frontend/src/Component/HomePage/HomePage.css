@@ -1,0 +1,8 @@
+.homePage{
+    display: flex;
+}
+.title{
+    color: red;
+    font-size: 30px;
+    text-transform: uppercase;
+}
