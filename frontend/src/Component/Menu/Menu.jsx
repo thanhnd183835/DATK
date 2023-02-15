@@ -23,7 +23,7 @@ import {useSelector} from "react-redux";
 import grey from "@material-ui/core/colors/grey";
 
 
-const drawerWidth = 280;
+ const drawerWidth = 280;
 
 
 const useStyles = makeStyles((theme) => ({
@@ -94,11 +94,15 @@ const useStyles = makeStyles((theme) => ({
     avatar: {
         cursor: 'pointer',
         backgroundColor: theme.palette.type === 'light' ? grey[200] : grey[900],
-    }
+    },
+    toolbar: {
+        paddingRight: 24, // keep right padding when drawer closed
+    },
 }))
 
 
-const Menu = () => {
+const Menu = (props) => {
+    const {changeOpenMenu} = props;
     const classes = useStyles();
     const history = useHistory();
     const inForUser = useSelector((state => state?.auth?.user?.data?.data))
@@ -108,9 +112,11 @@ const Menu = () => {
 
     const handleDrawerOpen = () => {
         setOpen(true);
+        changeOpenMenu(true);
     }
     const handleDrawerClose = () => {
         setOpen(false)
+        changeOpenMenu(false);
     }
     const logOut = () => {
         localStorage.removeItem('persist: root');
@@ -118,10 +124,10 @@ const Menu = () => {
         history.push('/login')
     }
     return (
-        <div className={classes.root}>
+        <div className={`${classes.root} root-menu root-menu-${open}`}>
             <CssBaseline/>
             <AppBar position="absolute"  className={clsx(classes.appBar, open && classes.appBarShift)}>
-                <Toolbar>
+                <Toolbar className={classes.toolBar}>
                     <IconButton
                         size="large"
                         edge="start"

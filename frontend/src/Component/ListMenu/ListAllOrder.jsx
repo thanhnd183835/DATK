@@ -30,7 +30,7 @@ const colums = [
 
 const useStyles = makeStyles({
     root: {
-        width: '100%',
+        // width: 'calc(100% - 280px)',
     },
     container: {
         maxHeight: 440,
@@ -41,6 +41,7 @@ const useStyles = makeStyles({
 
     },
     header: {
+        marginTop: 80,
         display: 'flex',
         marginBottom: '20px',
         justifyContent: 'space-between',
@@ -49,17 +50,17 @@ const useStyles = makeStyles({
         width: '40%',
         height: '80%',
         marginTop: '20px',
-        marginLeft: '40%'
+        marginLeft: '50%'
     },
     iconSearch: {
         marginTop: '20px',
     },
     search: {
-        width: '55%',
+        width: '45%',
         display: 'flex'
     },
     input: {
-        width: '100%'
+        width: '90%'
     }
 })
 
@@ -140,10 +141,19 @@ export default function ListAllOrder() {
         },
         [dispatch],
     );
+    const [openMenu, setOpenMenu] = useState(true);
+    const changeOpenMenu = (value) => {
+        console.log(value, 'vaule opent')
+        value ?
+        setOpenMenu(true) : setOpenMenu(false)
+    }
+    useEffect(() =>{
+    }, [openMenu])
+
     return (
-        <div className={'homePage'}>
-            <Menu/>
-            <Paper className={classes.root}>
+        <div className={`homePageListOrder open-menu-${openMenu ? 'true': 'false'}`}>
+            <Menu changeOpenMenu = {(value) => changeOpenMenu(value)}/>
+            <Paper className={'paper'}>
                 <div className={classes.header}>
                     <h2 className={classes.textTitle}>List Order</h2>
                     <div className={`${classes.search} header-search-component`}>

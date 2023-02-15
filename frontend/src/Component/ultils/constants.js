@@ -1,1 +1,2 @@
-export const BASE_URL = 'http://13.212.5.206/api';
+export const BASE_URL = 'https://doanthietke.click/api';
+// export const BASE_URL = 'http://localhost:2000/api';

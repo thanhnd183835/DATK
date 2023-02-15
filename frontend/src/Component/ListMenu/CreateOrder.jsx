@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
         float: 'right',
         marginRight: '100px',
         height: '45px',
-        width: '170px'
+        width: '200px'
     },
     formBody: {
         minWidth: '95%',
@@ -120,7 +120,7 @@ const CreateOrder = (props) => {
     };
 
     return (
-        <div className={'homePage'}>
+        <div className={'homePageCreate'}>
             <Menu/>
             <SimpleForm
                 className={'SimpleForm'}
