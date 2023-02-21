@@ -17,9 +17,11 @@ module.exports.create_payment_url = async (req, res, next) => {
         let returnUrl = config.vnp_ReturnUrl;
         // lay cac truong tu frontend gui len
         const date = new Date();
-        const formatCreateDate = dateFormat(date, "isoDateTime");
-        const createDate = formatCreateDate.slice(0, 19).replace(/[-T:]/g, '');
-        const orderId = dateFormat(date, "HHmmss");
+        const createDate = dateFormat(date, 'yyyymmddHHmmss');
+        console.log(1111111111)
+        const formatDateId = dateFormat(date, "isoDateTime");
+        const dateId = formatDateId.slice(0, 19).replace(/[-T:]/g, '');
+        const orderId = dateId.slice(8,14) ;
         const amount = req.body.amount;
         const bankCode = req.body.bankCode;
         const orderInfo = req.body.orderDescription;
@@ -95,8 +97,8 @@ module.exports.vnpay_ipn = async function (req, res) {
         delete vnp_Params['vnp_SecureHashType'];
 
         vnp_Params = sortObject(vnp_Params);
-        let config = require('config');
-        const secretKey = config.get('vnp_HashSecret');
+
+        const secretKey = config.vnp_HashSecret;
         const querystring = require('qs');
         const signData = querystring.stringify(vnp_Params, {encode: false});
         const crypto = require("crypto");
@@ -114,10 +116,10 @@ module.exports.vnpay_ipn = async function (req, res) {
             if (currentTransaction.orderId === orderId) {
                 if (currentTransaction.amount === amount) {
                     if (currentTransaction.status === '0') {
-                        if (rspCode === '00' && tsCode === '00') {
+                        if (rspCode === '00') {
                             const upDateStatus = await Transaction.findOneAndUpdate({
                                 orderId: orderId,
-                            }, {$set: {status: 1}});
+                            }, {$push: {status: 1}});
                             if (upDateStatus) {
                                 res.status(200).json({RspCode: '00', Message: 'success'})
                             }
@@ -146,14 +148,12 @@ module.exports.vnpay_return = async function (req, res) {
 
     let vnp_Params = req.query;
     let secureHash = vnp_Params["vnp_SecureHash"];
-
     delete vnp_Params["vnp_SecureHash"];
     delete vnp_Params["vnp_SecureHashType"];
 
     vnp_Params = sortObject(vnp_Params);
-    let config = require("config");
-    let tmnCode = config.get("vnp_TmnCode");
-    let secretKey = config.get("vnp_HashSecret");
+    let tmnCode = config.vnp_TmnCode;
+    let secretKey = config.vnp_HashSecret;
 
     let querystring = require("qs");
     let signData = querystring.stringify(vnp_Params, {encode: false});
@@ -161,13 +161,18 @@ module.exports.vnpay_return = async function (req, res) {
     let hmac = crypto.createHmac("sha512", secretKey);
     let signed = hmac.update(new Buffer.from(signData, "utf-8")).digest("hex");
     if (secureHash === signed) {
-        //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
-        if (vnp_Params["vnp_ResponseCode"] === '00') {
-            return res.redirect('/payment/success');
+        try {
+            const orderId = vnp_Params["vnp_TxnRef"];
+            let paymentResults = Transaction.findOne({orderId: orderId});
+            return res.status(200).json({
+                data: paymentResults,
+            })
+
+        } catch (err) {
+            return res.status(500).json({code: 1, error: 'server error'})
         }
-    } else {
-        return res.redirect('/payment/failure');
     }
+
 };
 
 function sortObject(obj) {
@@ -236,4 +241,47 @@ module.exports.searchTransaction = async (req, res) => {
         console.log(error)
         return res.status(500).json({code: 1, error: 'Server error'})
     }
+}
+// delete transaction
+module.exports.deleteTransaction = async (req, res) => {
+    try {
+        const idTransaction = req.params.id;
+        const userUpdate = await User.findOneAndUpdate(
+            {'transactions.transactionId': idTransaction},
+            {$pull: {transactions: {transactionId: idTransaction}}});
+        if(!userUpdate){
+            return res.status(404).json({code: 0, message:'user not found'});
+        }
+        const deleteTransaction = await Transaction.findOneAndRemove({_id: idTransaction});
+        if(!deleteTransaction){
+            return res.status(404).json({code: 0, message:'transaction not found!'})
+        }
+        if(deleteTransaction){
+            return res.status(200).json({
+                code: 1,
+                message:'Delete Forever transaction success'
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({error: 'Server error'})
+    }
+}
+
+// get transaction by id.
+module.exports.getOneTransactionId = async (req, res) =>{
+   try{
+       const IdTransaction = req.params.id;
+       const infoTransaction = await Transaction.findOne({_id: IdTransaction});
+       if(!infoTransaction){
+           return res.status(404).json({code: 0, message:'transaction not found'})
+       };
+       if(infoTransaction){
+           return res.status(200).json({
+               code: 1,
+               data: infoTransaction,
+           })
+       }
+   } catch (error) {
+       return res.status(500).json({error: 'Server error'})
+   }
 }
