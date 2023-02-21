@@ -110,16 +110,13 @@ module.exports.vnpay_ipn = async function (req, res) {
             const rspCode = vnp_Params['vnp_ResponseCode'];
             const tsCode = vnp_Params['vnp_TransactionStatus'];
             const amount = vnp_Params['vnp_Amount'];
-
             //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
             const currentTransaction = await Transaction.findOne();
             if (currentTransaction.orderId === orderId) {
                 if (currentTransaction.amount === amount) {
                     if (currentTransaction.status === '0') {
                         if (rspCode === '00') {
-                            const upDateStatus = await Transaction.findOneAndUpdate({
-                                orderId: orderId,
-                            }, {$push: {status: 1}});
+                            const upDateStatus = await Transaction.findOneAndUpdate({orderId: orderId,}, {status: 1});
                             if (upDateStatus) {
                                 res.status(200).json({RspCode: '00', Message: 'success'})
                             }
