@@ -19,7 +19,7 @@ module.exports.create_payment_url = async (req, res, next) => {
         const date = new Date();
         const formatDateId = dateFormat(date, "isoDateTime");
         const dateId = formatDateId.slice(0, 19).replace(/[-T:]/g, '');
-        const orderId = dateId.slice(8,14) ;
+        const orderId = dateId.slice(8, 14);
         const createDate = dateId;
         const amount = req.body.amount;
         const bankCode = req.body.bankCode;
@@ -35,19 +35,15 @@ module.exports.create_payment_url = async (req, res, next) => {
             orderType: req.body.orderType,
             transactionBy: req.user._id,
         });
-        transaction.save(async (error, transaction) => {
-            if (error) {
-                return res.status(400).json({error: "loi khi tao giao dich"});
-            }
-            if (transaction) {
-                await User.findOneAndUpdate({_id: req.user._id}, {$push: {transactions: {transactionId: transaction._id}}})
-            }
-            return res.status(201).json({
-                code: 0,
-                data: transaction,
-            })
-        });
+      try {
+          const cratedTransaction = await transaction.save();
+          if (cratedTransaction) {
+              await User.findOneAndUpdate({_id: req.user._id}, {$push: {transactions: {transactionId: transaction._id}}})
+          }
 
+      }catch (e) {
+          return res.status(400).json({error: "loi khi tao giao dich"});
+      }
 
         if (locale === null || locale === "") {
             locale = "vn";
@@ -83,7 +79,7 @@ module.exports.create_payment_url = async (req, res, next) => {
         });
 
     } catch (err) {
-        return res.status(500).json({code: 1, error: 'error server'})
+        console.log(err);
     }
 };
 
@@ -245,17 +241,17 @@ module.exports.deleteTransaction = async (req, res) => {
         const userUpdate = await User.findOneAndUpdate(
             {'transactions.transactionId': idTransaction},
             {$pull: {transactions: {transactionId: idTransaction}}});
-        if(!userUpdate){
-            return res.status(404).json({code: 0, message:'user not found'});
+        if (!userUpdate) {
+            return res.status(404).json({code: 0, message: 'user not found'});
         }
         const deleteTransaction = await Transaction.findOneAndRemove({_id: idTransaction});
-        if(!deleteTransaction){
-            return res.status(404).json({code: 0, message:'transaction not found!'})
+        if (!deleteTransaction) {
+            return res.status(404).json({code: 0, message: 'transaction not found!'})
         }
-        if(deleteTransaction){
+        if (deleteTransaction) {
             return res.status(200).json({
                 code: 1,
-                message:'Delete Forever transaction success'
+                message: 'Delete Forever transaction success'
             })
         }
     } catch (error) {
@@ -264,20 +260,21 @@ module.exports.deleteTransaction = async (req, res) => {
 }
 
 // get transaction by id.
-module.exports.getOneTransactionId = async (req, res) =>{
-   try{
-       const IdTransaction = req.params.id;
-       const infoTransaction = await Transaction.findOne({_id: IdTransaction});
-       if(!infoTransaction){
-           return res.status(404).json({code: 0, message:'transaction not found'})
-       };
-       if(infoTransaction){
-           return res.status(200).json({
-               code: 1,
-               data: infoTransaction,
-           })
-       }
-   } catch (error) {
-       return res.status(500).json({error: 'Server error'})
-   }
+module.exports.getOneTransactionId = async (req, res) => {
+    try {
+        const IdTransaction = req.params.id;
+        const infoTransaction = await Transaction.findOne({_id: IdTransaction});
+        if (!infoTransaction) {
+            return res.status(404).json({code: 0, message: 'transaction not found'})
+        }
+        ;
+        if (infoTransaction) {
+            return res.status(200).json({
+                code: 1,
+                data: infoTransaction,
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({error: 'Server error'})
+    }
 }
