@@ -7,9 +7,6 @@ import {
     SelectInput,
     SimpleForm,
     TextInput,
-    Toolbar,
-    useRedirect,
-    useTranslate
 } from 'react-admin';
 import dateFormat from "dateformat";
 import {Typography, Box} from "@material-ui/core";
@@ -75,7 +72,7 @@ const bank = [
     {id: 'OCB', name: 'Ngân hàng OCB'},
     {id: 'SHB', name: 'Ngân hàng SHB'},
     {id: 'IVB', name: 'Ngân hàng IVB'},
-]
+];
 const date = new Date();
 const dateFormat1 = dateFormat(date, 'yyyy-mm-dd HH:MM:ss')
 
@@ -93,9 +90,11 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         color: 'red',
-        fontSize: '17px',
+        fontSize: '30px',
         textTransform: "uppercase",
-        marginLeft: '10px'
+        marginLeft: '10px',
+        width: '100%',
+        paddingBottom:'20px'
     }
 }))
 const CreateOrder = (props) => {

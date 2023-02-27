@@ -9,13 +9,16 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import {BASE_URL} from "../ultils/constants";
 import axios from "axios";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Link} from "react-router-dom";
 import TablePagination from "@material-ui/core/TablePagination";
 import Input from "@material-ui/core/Input";
 import SearchIcon from "@material-ui/icons/Search";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import './listAllOrder.css';
 import Menu from "../Menu/Menu";
+import IconButton from "@material-ui/core/IconButton";
+import {deleteTransaction} from "../Redux/transaction/transaction.slice";
 
 
 const colums = [
@@ -26,19 +29,18 @@ const colums = [
     {id: 'bankCode', label: 'Ngân Hàng', align: 'center'},
     {id: 'orderInfo', label: 'Nội dung', align: 'center'},
     {id: 'status', label: 'Trạng thái', align: 'center'},
+    {id: 'action', label: 'Thao Tác', align: 'center'}
 ];
 
 const useStyles = makeStyles({
-    root: {
-        // width: 'calc(100% - 280px)',
-    },
     container: {
         maxHeight: 440,
     },
     textTitle: {
         marginLeft: '10px',
-        color: '#0926d7'
-
+        color: '#0926d7',
+        fontSize: '30px',
+        textTransform: 'uppercase',
     },
     header: {
         marginTop: 80,
@@ -82,8 +84,8 @@ export default function ListAllOrder() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [inputSearch, setInputSearch] = useState('');
+    const transactionDelete = useSelector((state) => state?.transaction?.transactionDelete)
     const dispatch = useDispatch();
-
     const handleChangePage = (
         event: React.MouseEvent<HTMLButtonElement> | null,
         newPage: number,
@@ -118,6 +120,20 @@ export default function ListAllOrder() {
     }
 
 
+    const [openMenu, setOpenMenu] = useState(true);
+    const changeOpenMenu = (value) => {
+        value ?
+            setOpenMenu(true) : setOpenMenu(false)
+    }
+    useEffect(() => {
+    }, [openMenu]);
+
+    const handleDelete = (id) => {
+        if (window.confirm('Bạn chắc chắn muốn xóa giao dịch này?')) {
+            dispatch(deleteTransaction(id));
+        }
+    };
+
     useEffect(
         function () {
             let config = {
@@ -139,23 +155,16 @@ export default function ListAllOrder() {
                     console.log(err);
                 });
         },
-        [dispatch],
+        [dispatch, transactionDelete],
     );
-    const [openMenu, setOpenMenu] = useState(true);
-    const changeOpenMenu = (value) => {
-        console.log(value, 'vaule opent')
-        value ?
-        setOpenMenu(true) : setOpenMenu(false)
-    }
-    useEffect(() =>{
-    }, [openMenu])
+
 
     return (
-        <div className={`homePageListOrder open-menu-${openMenu ? 'true': 'false'}`}>
-            <Menu changeOpenMenu = {(value) => changeOpenMenu(value)}/>
+        <div className={`homePageListOrder open-menu-${openMenu ? 'true' : 'false'}`}>
+            <Menu changeOpenMenu={(value) => changeOpenMenu(value)}/>
             <Paper className={'paper'}>
                 <div className={classes.header}>
-                    <h2 className={classes.textTitle}>List Order</h2>
+                    <h2 className={classes.textTitle}>Danh sách đơn hàng</h2>
                     <div className={`${classes.search} header-search-component`}>
                         <div className={`${classes.inputSearch} input-search`}>
                             <Input
@@ -192,7 +201,9 @@ export default function ListAllOrder() {
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
                                                         <Link
-                                                              style={{cursor: 'pointer'}}>
+                                                            to={`/infoTransaction/${value}`}
+                                                            style={{cursor: 'pointer'}}
+                                                        >
                                                             {value}
                                                         </Link>
                                                     </TableCell>
@@ -204,7 +215,10 @@ export default function ListAllOrder() {
                                                     <TableCell
                                                         key={column.id}
                                                         align={column.align}
-                                                        style={{color: value === 'Success' ? '#09bd1b' : value === 'Pending' ? '#0926d7' : '#f3062a'}}
+                                                        style={{
+                                                            color: value === 'Success' ? '#09bd1b' : value === 'Pending' ? '#0926d7' : '#f3062a',
+                                                            fontWeight: 700
+                                                        }}
                                                     >
                                                         {value}
                                                     </TableCell>
@@ -257,6 +271,22 @@ export default function ListAllOrder() {
                                                         align={column.align}
                                                     >
                                                         {value}
+                                                    </TableCell>
+                                                )
+                                            }
+                                            if (column.id === 'action') {
+                                                return (
+                                                    <TableCell
+                                                        key={column.id}
+                                                        align={column.align}
+                                                    >
+                                                        <IconButton
+                                                            onClick={() => {
+                                                                handleDelete(row.id)
+                                                            }}
+                                                        >
+                                                            <DeleteForeverIcon color={"error"}/>
+                                                        </IconButton>
                                                     </TableCell>
                                                 )
                                             }

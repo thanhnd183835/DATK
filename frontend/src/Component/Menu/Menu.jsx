@@ -107,7 +107,6 @@ const Menu = (props) => {
     const history = useHistory();
     const inForUser = useSelector((state => state?.auth?.user?.data?.data))
     const [open, setOpen] = React.useState(true);
-    const [tab, setTab] = useState(1);
 
 
     const handleDrawerOpen = () => {

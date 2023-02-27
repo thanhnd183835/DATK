@@ -55,18 +55,7 @@ const authSlice = createSlice({
             state.loading = false;
             state.user = action.payload
         }
-        // //logout
-        // [`${logout.pending}`]: (state) => {
-        //     state.loading = true;
-        // },
-        // [`${logout.rejected}`]: (state, action) => {
-        //     state.loading = false;
-        //     state.error = action.error;
-        // },
-        // [`${logout.fulfilled}`]: (state, action) => {
-        //     state.loading = false;
-        //     state.user = action.payload;
-        // },
+        ,
     },
 });
 export const {reducer: authReducer} = authSlice;

@@ -1,0 +1,17 @@
+.info-transaction{
+    margin-left: 10%;
+}
+.title{
+    text-align: center;
+    padding-bottom: 3%;
+}
+p{
+    font-size: 20px;
+}
+.info{
+    display: flex;
+}
+.info-title{
+    font-weight: 700;
+    padding-right: 10px;
+}

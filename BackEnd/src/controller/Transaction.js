@@ -17,11 +17,10 @@ module.exports.create_payment_url = async (req, res, next) => {
         let returnUrl = config.vnp_ReturnUrl;
         // lay cac truong tu frontend gui len
         const date = new Date();
-        const createDate = dateFormat(date, 'yyyymmddHHmmss');
-        console.log(1111111111)
         const formatDateId = dateFormat(date, "isoDateTime");
         const dateId = formatDateId.slice(0, 19).replace(/[-T:]/g, '');
         const orderId = dateId.slice(8,14) ;
+        const createDate = dateId;
         const amount = req.body.amount;
         const bankCode = req.body.bankCode;
         const orderInfo = req.body.orderDescription;
