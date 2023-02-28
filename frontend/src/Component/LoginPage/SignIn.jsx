@@ -3,7 +3,7 @@ import {signIn} from "../Redux/auth/auth.slice";
 import { useDispatch } from 'react-redux';
 import  {useHistory} from 'react-router-dom';
 import {showModalMessage} from "../Redux/message/message.slice";
-import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
+
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
@@ -31,6 +31,9 @@ const SignIn = () => {
     }
     return (
         <div>
+            <div>
+                <p className="text-title">Đăng nhập</p>
+            </div>
             <p className="text-fields">Tên đăng nhập</p>
             <input
                 value={email}

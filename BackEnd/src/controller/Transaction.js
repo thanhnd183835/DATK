@@ -35,15 +35,16 @@ module.exports.create_payment_url = async (req, res, next) => {
             orderType: req.body.orderType,
             transactionBy: req.user._id,
         });
-      try {
-          const cratedTransaction = await transaction.save();
-          if (cratedTransaction) {
-              await User.findOneAndUpdate({_id: req.user._id}, {$push: {transactions: {transactionId: transaction._id}}})
-          }
+        try {
+            const createdTransaction = await transaction.save();
+            if (createdTransaction) {
+                await User.findOneAndUpdate({_id: req.user._id},
+                    {$push: {transactions: {transactionId: transaction._id}}})
+            }
 
-      }catch (e) {
-          return res.status(400).json({error: "loi khi tao giao dich"});
-      }
+        } catch (e) {
+            return res.status(500).json({error: "loi khi tao giao dich"});
+        }
 
         if (locale === null || locale === "") {
             locale = "vn";

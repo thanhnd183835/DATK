@@ -19,6 +19,10 @@ import './listAllOrder.css';
 import Menu from "../Menu/Menu";
 import IconButton from "@material-ui/core/IconButton";
 import {deleteTransaction} from "../Redux/transaction/transaction.slice";
+import TableSortLabel from "@material-ui/core/TableSortLabel";
+import Box from "@material-ui/core/Box";
+import visuallyHidden from "@mui/utils/visuallyHidden";
+import PropTypes from 'prop-types';
 
 
 const colums = [
@@ -74,16 +78,92 @@ function createData(transaction) {
         orderInfo: transaction.orderInfo,
         orderType: transaction.orderType,
         orderId: transaction.orderId,
-        status: transaction.status === 1 ? 'Success' : transaction.status === 0 ? 'Pending' : 'Fail',
+        status: transaction.status === 1 ? 'Thành Công' : transaction.status === 0 ? 'Chưa Thanh Toán' : 'Thất Bại',
     };
+};
+
+function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
+    }
+    return 0;
 }
+
+function getComparator(order, orderBy) {
+    return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+};
+
+function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) {
+            return order;
+        }
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+};
+
+function EnhancedTableHead(props) {
+    const {order, orderBy, onRequestSort} =
+        props;
+    const createSortHandler = (property) => (event) => {
+        onRequestSort(event, property);
+    };
+
+    return (
+        <TableHead>
+            <TableRow>
+                {colums.map((headCell) => (
+                    <TableCell
+                        key={headCell.id}
+                        align={"center"}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                            style={{color: '#0926d7', textTransform: 'uppercase', fontSize: 15, marginLeft: 25}}
+                        >
+                            {headCell.label}
+                            {orderBy === headCell.id ? (
+                                <Box component="span" sx={visuallyHidden}>
+                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </Box>
+                            ) : null}
+                        </TableSortLabel>
+                    </TableCell>
+                ))}
+            </TableRow>
+        </TableHead>
+    );
+}
+
+EnhancedTableHead.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    orderBy: PropTypes.string.isRequired,
+    rowCount: PropTypes.number.isRequired,
+};
+
 
 export default function ListAllOrder() {
     const classes = useStyles();
+    const [order, setOrder] = useState('asc');
+    const [orderBy, setOrderBy] = useState('calories');
     const [orderList, setOrderList] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [inputSearch, setInputSearch] = useState('');
+    const [selected, setSelected] = React.useState([]);
     const transactionDelete = useSelector((state) => state?.transaction?.transactionDelete)
     const dispatch = useDispatch();
     const handleChangePage = (
@@ -157,8 +237,19 @@ export default function ListAllOrder() {
         },
         [dispatch, transactionDelete],
     );
-
-
+    const handleSelectAllClick = (event) => {
+        if (event.target.checked) {
+            const newSelected = colums.map((n) => n.name);
+            setSelected(newSelected);
+            return;
+        }
+        setSelected([]);
+    };
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
     return (
         <div className={`homePageListOrder open-menu-${openMenu ? 'true' : 'false'}`}>
             <Menu changeOpenMenu={(value) => changeOpenMenu(value)}/>
@@ -181,18 +272,16 @@ export default function ListAllOrder() {
                 </div>
                 <TableContainer>
                     <Table stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                {colums.map((column) => (
-                                    <TableCell key={column.id} align={column.align}
-                                               style={{color: '#0926d7', textTransform: 'uppercase'}}>
-                                        {column.label}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
+                        <EnhancedTableHead
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={colums.length}
+                        />
                         <TableBody>
-                            {orderList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                            {stableSort(orderList, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                         {colums.map((column) => {
@@ -216,7 +305,7 @@ export default function ListAllOrder() {
                                                         key={column.id}
                                                         align={column.align}
                                                         style={{
-                                                            color: value === 'Success' ? '#09bd1b' : value === 'Pending' ? '#0926d7' : '#f3062a',
+                                                            color: value === 'Thành Công' ? '#09bd1b' : value === 'Chưa Thanh Toán' ? '#0926d7' : '#f3062a',
                                                             fontWeight: 700
                                                         }}
                                                     >

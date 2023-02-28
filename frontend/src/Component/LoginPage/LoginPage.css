@@ -1,12 +1,12 @@
 .banner{
     text-align: center;
-
+    width: 100%;
 }
 .loginPage__signin {
 
 }
 .logipage__text {
-    width: 258px;
+    width: 66%;
     height: 36px;
     margin: 5px;
     border: 1px solid #dbdbdb;
@@ -15,8 +15,8 @@
     border-radius: 5px;
 }
 .login__button {
-    width: 270px;
-    height: 36px;
+    width: 66%;
+    height: 40px;
     border-radius: 5px;
     font-weight: bold;
     margin-top: 5px;
@@ -40,7 +40,7 @@
 }
 .middle{
     border: none;
-    width: 400px;
+    width: 20%;
     box-shadow: 0px 0px 20px 0px rgb(50 50 50);
     border-radius: 10px;
     overflow: hidden;
@@ -51,12 +51,22 @@
     z-index: 99;
     backdrop-filter: blur(13px);
     text-align: center;
-    height: 250px;
+    height: 25%;
 }
 .text-fields{
     text-align: left;
-    margin-bottom: -2px;
-    font-size: 15px;
-    margin-left: 70px;
+    margin-top: 10px;
+    margin-bottom: 2px;
+    font-size: 17px;
+    margin-left: 17%;
     color: #0395f6;
+    font-weight: unset;
+    text-transform: uppercase;
+}
+.text-title{
+    color: #0404ef;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 5px;
+    font-size: 25px;
 }

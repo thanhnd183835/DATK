@@ -1,6 +1,6 @@
 import React from "react";
 import "./HomePage.css";
-import logo from "../img/sI7ZtxVlhykDJnmWiqsDR43iclLgLzS94A.png"
+import logo from "../img/du-an-sunshine-city-saigon-9-1400x788.jpg"
 
 const MainPage = () => {
     return (
@@ -10,9 +10,9 @@ const MainPage = () => {
                 marginRight: "auto",
                 textAlign: "center"
             }}>
-                <div className={"title"}>Quản lý giao dịch qua VNPay</div>
+                <div className={"title"}>Quản lý giao dịch</div>
                 <div>
-                    <img src={logo} style={{width:900}}/>
+                    <img src={logo} style={{width:1000}} alt={'ảnh chung cư'}/>
                 </div>
             </div>
     )
