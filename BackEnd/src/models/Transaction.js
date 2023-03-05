@@ -23,12 +23,13 @@ const TransactionSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        status: {
+        TransactionStatus: {
             type: Number,
             default: 0,
             enum: [
                 0, // mac dinh
                 1, //thanh cong
+                2,// that bai
             ],
         },
         transactionBy: {type: ObjectId, ref: 'User'},

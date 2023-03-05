@@ -116,8 +116,8 @@ const InfoTransaction = (props) => {
                    <div className={'info'}>
                        <p className={'info-title'}>Trạng thái:</p>
                        <p>
-                           {TransactionInfo.status === 1
-                               ? 'Đã thanh toán' : TransactionInfo.status === 0
+                           {TransactionInfo.TransactionStatus === 1
+                               ? 'Đã thanh toán' : TransactionInfo.TransactionStatus === 0
                                    ? 'Chưa thanh toán' : 'Giao dịch thất bại'}.
                        </p>
                    </div>

@@ -20,6 +20,7 @@ module.exports.create_payment_url = async (req, res, next) => {
         const formatDateId = dateFormat(date, "isoDateTime");
         const dateId = formatDateId.slice(0, 19).replace(/[-T:]/g, '');
         const orderId = dateId.slice(8, 14);
+        console.log(orderId, '2222222')
         const createDate = dateId;
         const amount = req.body.amount;
         const bankCode = req.body.bankCode;
@@ -107,11 +108,11 @@ module.exports.vnpay_ipn = async function (req, res) {
             const tsCode = vnp_Params['vnp_TransactionStatus'];
             const amount = vnp_Params['vnp_Amount'];
             //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
-            const currentTransaction = await Transaction.findOne();
+            const currentTransaction = await Transaction.findOne({orderId: orderId});
             if (currentTransaction.orderId === orderId) {
-                if (currentTransaction.amount === amount) {
-                    if (currentTransaction.status === '0') {
-                        if (rspCode === '00') {
+                if (currentTransaction.amount === amount/100) {
+                    if (currentTransaction.TransactionStatus === '0') {
+                        if (rspCode === '00' && tsCode ==='00') {
                             const upDateStatus = await Transaction.findOneAndUpdate({orderId: orderId,}, {status: 1});
                             if (upDateStatus) {
                                 res.status(200).json({RspCode: '00', Message: 'success'})
@@ -183,7 +184,7 @@ function sortObject(obj) {
     }
     return sorted;
 }
-
+// list
 module.exports.getListTransaction = async function (req, res) {
     try {
         let transaction = await Transaction.find({});

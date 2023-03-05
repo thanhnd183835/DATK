@@ -32,7 +32,7 @@ const colums = [
     {id: 'amount', label: 'Số tiền', align: 'center'},
     {id: 'bankCode', label: 'Ngân Hàng', align: 'center'},
     {id: 'orderInfo', label: 'Nội dung', align: 'center'},
-    {id: 'status', label: 'Trạng thái', align: 'center'},
+    {id: 'TransactionStatus', label: 'Trạng thái', align: 'center'},
     {id: 'action', label: 'Thao Tác', align: 'center'}
 ];
 
@@ -78,7 +78,7 @@ function createData(transaction) {
         orderInfo: transaction.orderInfo,
         orderType: transaction.orderType,
         orderId: transaction.orderId,
-        status: transaction.status === 1 ? 'Thành Công' : transaction.status === 0 ? 'Chưa Thanh Toán' : 'Thất Bại',
+        TransactionStatus: transaction.TransactionStatus === 1 ? 'Thành Công' : transaction.TransactionStatus === 0 ? 'Chưa Thanh Toán' : 'Thất Bại',
     };
 };
 
@@ -299,7 +299,7 @@ export default function ListAllOrder() {
                                                 )
                                             }
 
-                                            if (column.id === 'status') {
+                                            if (column.id === 'TransactionStatus') {
                                                 return (
                                                     <TableCell
                                                         key={column.id}
