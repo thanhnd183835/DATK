@@ -20,7 +20,6 @@ module.exports.create_payment_url = async (req, res, next) => {
         const formatDateId = dateFormat(date, "isoDateTime");
         const dateId = formatDateId.slice(0, 19).replace(/[-T:]/g, '');
         const orderId = dateId.slice(8, 14);
-        console.log(orderId, '2222222')
         const createDate = dateId;
         const amount = req.body.amount;
         const bankCode = req.body.bankCode;
@@ -109,29 +108,17 @@ module.exports.vnpay_ipn = async function (req, res) {
             const amount = vnp_Params['vnp_Amount'];
             //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
             const currentTransaction = await Transaction.findOne({orderId: orderId});
-            if (currentTransaction.orderId === orderId) {
-                if (currentTransaction.amount === amount/100) {
-                    if (currentTransaction.TransactionStatus === '0') {
-                        if (rspCode === '00' && tsCode ==='00') {
-                            const upDateStatus = await Transaction.findOneAndUpdate({orderId: orderId,}, {status: 1});
-                            if (upDateStatus) {
-                                res.status(200).json({RspCode: '00', Message: 'success'})
-                            }
-                        } else {
-                            res.status(400).json({error: "loi cap nhat status"})
-                        }
-                    } else {
-                        res.status(200).json({RspCode: '02', Message: 'Order already confirmed'})
+            if(currentTransaction.orderId === orderId){
+                if (currentTransaction.amount === amount/100){
+                    if (rspCode === "00" && tsCode ==="00"){
+                        await Transaction.findOneAndUpdate({orderId: orderId},{TransactionStatus: 1})
+                        res.status(200).json({RspCode: '00', Message: 'success'})
                     }
-                } else {
-                    res.status(200).json({RspCode: '04', Message: 'invalid amount'})
+                    else{
+                        await Transaction.findOneAndUpdate({orderId: orderId},{TransactionStatus: 2})
+                    }
                 }
-            } else {
-                res.status(200).json({RspCode: '01', Message: 'Order not found'})
             }
-
-        } else {
-            res.status(200).json({RspCode: '97', Message: 'Fail checksum'})
         }
     } catch (RspCode) {
         res.status(200).json({RspCode: '99', Message: 'Unknow error'})
@@ -268,8 +255,7 @@ module.exports.getOneTransactionId = async (req, res) => {
         const infoTransaction = await Transaction.findOne({_id: IdTransaction});
         if (!infoTransaction) {
             return res.status(404).json({code: 0, message: 'transaction not found'})
-        }
-        ;
+        };
         if (infoTransaction) {
             return res.status(200).json({
                 code: 1,
