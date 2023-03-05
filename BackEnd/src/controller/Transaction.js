@@ -252,7 +252,7 @@ module.exports.deleteTransaction = async (req, res) => {
 module.exports.getOneTransactionId = async (req, res) => {
     try {
         const IdTransaction = req.params.id;
-        const infoTransaction = await Transaction.findOne({_id: IdTransaction});
+        const infoTransaction = await Transaction.findOne({orderId: IdTransaction});
         if (!infoTransaction) {
             return res.status(404).json({code: 0, message: 'transaction not found'})
         };
