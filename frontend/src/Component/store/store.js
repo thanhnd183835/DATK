@@ -9,7 +9,6 @@ import transactionReducer from "../Redux/transaction/transaction.slice";
 const rootReducer = combineReducers({
     auth: authReducer,
     transaction: transactionReducer,
-    // user: userReducer,
     message: messageReducer,
 });
 

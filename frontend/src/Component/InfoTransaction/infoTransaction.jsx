@@ -5,6 +5,9 @@ import "./infoTransaction.css"
 import TableContainer from "@material-ui/core/TableContainer";
 import {useHistory} from 'react-router-dom';
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import {BASE_URL} from "../ultils/constants";
+import axios from "axios";
+import {infoTransaction} from "../Redux/transaction/transaction.slice";
 
 const commodities = {
     '100000': 'Thực Phẩm - Tiêu Dùng',
@@ -66,7 +69,8 @@ const bank = {
 };
 const InfoTransaction = (props) => {
     const history = useHistory();
-    const TransactionInfo = useSelector((state) => state.transaction?.infoTransaction?.data)
+    const dispatch = useDispatch();
+    const [transactionInfo, setTransactionInfo] = useState([]);
     const [openMenu, setOpenMenu] = useState(true);
     const changeOpenMenu = (value) => {
         value ? setOpenMenu(true) : setOpenMenu(false)
@@ -74,11 +78,19 @@ const InfoTransaction = (props) => {
     useEffect(() => {
     }, [openMenu]);
 
-    const typeOrder = TransactionInfo.orderType;
-    const message = commodities[typeOrder];
-    const codeBank = TransactionInfo.bankCode;
-    const textBank = bank[codeBank];
 
+    useEffect(()=>{
+        const fetchData = async () =>{
+            const result = await dispatch(infoTransaction(props.match.params.id));
+            setTransactionInfo(result.payload.data.data);
+        };
+        fetchData();
+    },[]);
+
+    const typeOrder = transactionInfo.orderType;
+    const message = commodities[typeOrder];
+    const codeBank = transactionInfo.bankCode;
+    const textBank = bank[codeBank];
     return (
         <div className={`homePageListOrder open-menu-${openMenu ? 'true' : 'false'}`}>
             <Menu changeOpenMenu={(value) => changeOpenMenu(value)}/>
@@ -89,23 +101,23 @@ const InfoTransaction = (props) => {
                 <div className={'info-transaction'}>
                     <div className={'info'}>
                         <p className={'info-title'}>Mã đơn hàng:</p>
-                        <p>{TransactionInfo._id}.</p>
+                        <p>{transactionInfo.orderId}.</p>
                     </div>
                     <div className={'info'}>
                         <p className={'info-title'}>Số tiền:</p>
                         <p>
-                            {TransactionInfo.amount}.
+                            {transactionInfo.amount}.
                         </p>
                     </div>
                     <div className={'info'}>
                         <p className={'info-title'}>Nội dung: </p>
                         <p>
-                            {TransactionInfo.orderInfo}.
+                            {transactionInfo.orderInfo}.
                         </p>
                     </div>
                     <div className={'info'}>
                         <p className={'info-title'}>Loại hàng hóa:</p>
-                        <p>{message}.</p>
+                        <p>{message}</p>
                     </div>
                     <div className={'info'}>
                         <p className={'info-title'}>Ngân hàng thanh toán: </p>
@@ -116,8 +128,8 @@ const InfoTransaction = (props) => {
                    <div className={'info'}>
                        <p className={'info-title'}>Trạng thái:</p>
                        <p>
-                           {TransactionInfo.TransactionStatus === 1
-                               ? 'Đã thanh toán' : TransactionInfo.TransactionStatus === 0
+                           {transactionInfo.TransactionStatus === 1
+                               ? 'Đã thanh toán' : transactionInfo.TransactionStatus === 0
                                    ? 'Chưa thanh toán' : 'Giao dịch thất bại'}.
                        </p>
                    </div>

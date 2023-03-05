@@ -26,7 +26,6 @@ import PropTypes from 'prop-types';
 
 
 const colums = [
-    {id: 'id', label: 'ID', align: 'center'},
     {id: 'orderId', label: 'Mã đơn hàng', align: 'center'},
     {id: 'orderType', label: 'Mã hàng hóa', align: 'center'},
     {id: 'amount', label: 'Số tiền', align: 'center'},
@@ -72,7 +71,6 @@ const useStyles = makeStyles({
 
 function createData(transaction) {
     return {
-        id: transaction._id,
         amount: transaction.amount,
         bankCode: transaction.bankCode,
         orderInfo: transaction.orderInfo,
@@ -286,18 +284,7 @@ export default function ListAllOrder() {
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                         {colums.map((column) => {
                                             const value = row[column.id]
-                                            if (column.id === 'id') {
-                                                return (
-                                                    <TableCell key={column.id} align={column.align}>
-                                                        <Link
-                                                            to={`/infoTransaction/${value}`}
-                                                            style={{cursor: 'pointer'}}
-                                                        >
-                                                            {value}
-                                                        </Link>
-                                                    </TableCell>
-                                                )
-                                            }
+
 
                                             if (column.id === 'TransactionStatus') {
                                                 return (
@@ -359,7 +346,12 @@ export default function ListAllOrder() {
                                                         key={column.id}
                                                         align={column.align}
                                                     >
-                                                        {value}
+                                                        <Link
+                                                            to={`/infoTransaction/${value}`}
+                                                            style={{cursor: 'pointer'}}
+                                                        >
+                                                            {value}
+                                                        </Link>
                                                     </TableCell>
                                                 )
                                             }

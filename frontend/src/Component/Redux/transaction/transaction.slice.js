@@ -9,9 +9,9 @@ export const deleteTransaction = createAsyncThunk('transaction/delete-transactio
         return error;
     }
 });
-export const infoTransaction = createAsyncThunk('transaction/info-transaction', async (IdTransaction) =>{
+export const infoTransaction = createAsyncThunk('transaction/info-transaction', async (id) =>{
     try{
-        return await axiosInstance.get(`transaction/info-transaction/${IdTransaction}`)
+        return await axiosInstance.get(`transaction/info-transaction/${id}`)
     }catch (error) {
         return error;
     }

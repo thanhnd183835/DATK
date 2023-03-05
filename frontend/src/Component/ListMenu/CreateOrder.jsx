@@ -112,7 +112,6 @@ const CreateOrder = (props) => {
             // console.log(response);
             if (response) {
                 // @ts-ignore1
-
                 window.open(response.data.data, '_self')
             }
         });
