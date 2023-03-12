@@ -193,7 +193,7 @@ const Menu = (props) => {
                             <ListItemIcon>
                                 <AddShoppingCart color="primary"/>
                             </ListItemIcon>
-                            <ListItemText primary="Thanh toán đơn hàng"/>
+                            <ListItemText primary="Tạo đơn hàng"/>
                         </ListItem>
                         <ListItem
                             button

@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
         float: 'right',
         marginRight: '100px',
         height: '45px',
-        width: '200px'
+        width: '250px'
     },
     formBody: {
         minWidth: '95%',
@@ -127,7 +127,7 @@ const CreateOrder = (props) => {
                 toolbar={
                     <SaveButton
                         className={classes.saveButton}
-                        label={"Thanh toán"}
+                        label={"Tạo đơn hàng"}
                     />}
             >
                 <Typography variant="h6" className={classes.title}>

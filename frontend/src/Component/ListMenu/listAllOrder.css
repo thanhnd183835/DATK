@@ -27,3 +27,4 @@ body #root{
 .open-menu-true >.paper{
     width: calc(100% - 280px);
 }
+

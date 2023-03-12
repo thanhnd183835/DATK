@@ -23,16 +23,20 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Box from "@material-ui/core/Box";
 import visuallyHidden from "@mui/utils/visuallyHidden";
 import PropTypes from 'prop-types';
+import Button from "@material-ui/core/Button";
 
 
 const colums = [
+    {id: 'id', label: 'ID', align: 'center'},
     {id: 'orderId', label: 'Mã đơn hàng', align: 'center'},
     {id: 'orderType', label: 'Mã hàng hóa', align: 'center'},
     {id: 'amount', label: 'Số tiền', align: 'center'},
     {id: 'bankCode', label: 'Ngân Hàng', align: 'center'},
     {id: 'orderInfo', label: 'Nội dung', align: 'center'},
     {id: 'TransactionStatus', label: 'Trạng thái', align: 'center'},
-    {id: 'action', label: 'Thao Tác', align: 'center'}
+    {id: 'button', label: '', align: 'center'},
+    {id: 'action', label: 'Thao Tác', align: 'center'},
+
 ];
 
 const useStyles = makeStyles({
@@ -71,6 +75,7 @@ const useStyles = makeStyles({
 
 function createData(transaction) {
     return {
+        id: transaction._id,
         amount: transaction.amount,
         bankCode: transaction.bankCode,
         orderInfo: transaction.orderInfo,
@@ -227,6 +232,7 @@ export default function ListAllOrder() {
                     if (res.status === 200) {
                         const transactions = res.data.data.map((transaction) => createData(transaction));
                         setOrderList(transactions);
+
                     }
                 })
                 .catch((err) => {
@@ -235,6 +241,7 @@ export default function ListAllOrder() {
         },
         [dispatch, transactionDelete],
     );
+
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
             const newSelected = colums.map((n) => n.name);
@@ -248,6 +255,7 @@ export default function ListAllOrder() {
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
+
     return (
         <div className={`homePageListOrder open-menu-${openMenu ? 'true' : 'false'}`}>
             <Menu changeOpenMenu={(value) => changeOpenMenu(value)}/>
@@ -284,8 +292,6 @@ export default function ListAllOrder() {
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                         {colums.map((column) => {
                                             const value = row[column.id]
-
-
                                             if (column.id === 'TransactionStatus') {
                                                 return (
                                                     <TableCell
@@ -297,6 +303,21 @@ export default function ListAllOrder() {
                                                         }}
                                                     >
                                                         {value}
+                                                    </TableCell>
+                                                )
+                                            }
+                                            if (column.id === 'id') {
+                                                return (
+                                                    <TableCell
+                                                        key={column.id}
+                                                        align={column.align}
+                                                    >
+                                                        <Link
+                                                            to={`/infoTransaction/${value}`}
+                                                            style={{cursor: 'pointer'}}
+                                                        >
+                                                            {value}
+                                                        </Link>
                                                     </TableCell>
                                                 )
                                             }
@@ -346,12 +367,7 @@ export default function ListAllOrder() {
                                                         key={column.id}
                                                         align={column.align}
                                                     >
-                                                        <Link
-                                                            to={`/infoTransaction/${value}`}
-                                                            style={{cursor: 'pointer'}}
-                                                        >
-                                                            {value}
-                                                        </Link>
+                                                        {value}
                                                     </TableCell>
                                                 )
                                             }
@@ -371,6 +387,29 @@ export default function ListAllOrder() {
                                                     </TableCell>
                                                 )
                                             }
+
+                                            if (column.id === 'button') {
+                                                return (
+                                                    <TableCell>
+                                                        {row.TransactionStatus === "Chưa Thanh Toán" ? (
+                                                            <Button
+                                                                variant="contained"
+                                                                style={
+                                                                    {
+                                                                        backgroundColor: '#0926d7',
+                                                                        color: "#FFFF",
+                                                                        textTransform:'none',
+                                                                        width: 150
+                                                                    }}
+                                                            >
+                                                                Thanh Toán
+                                                            </Button>
+                                                        ) : (<button></button>)
+                                                        }
+                                                    </TableCell>
+                                                )
+                                            }
+
                                         })}
                                     </TableRow>
                                 )
